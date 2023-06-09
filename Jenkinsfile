@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', credentialsId: '<CREDS>', url: 'https://github.com/sumeetninawe/tf-tuts'
+                git branch: 'main', url: https://github.com/nekka69a/terraform-jenkins-tp.git'
             }
         }
         stage('Terraform init') {

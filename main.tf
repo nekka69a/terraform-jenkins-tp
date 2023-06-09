@@ -16,51 +16,51 @@ provider "azurerm" {
   tenant_id       = "7349d3b2-951f-41be-877e-d8ccd9f3e73c"
 }
 
-resource "azurerm_resource_group" "exampleamina" {
-  name     = "exampleamina-resources"
+provider "azurerm" {
+  features {}
+}
+
+resource "azurerm_resource_group" "example" {
+  name     = "example-resources"
   location = "West Europe"
 }
 
-resource "azurerm_virtual_network" "exampleamina" {
-  name                = "exampleamina-network"
+resource "azurerm_virtual_network" "example" {
+  name                = "example-network"
   address_space       = ["10.0.0.0/16"]
-  location            = azurerm_resource_group.exampleamina.location
-  resource_group_name = azurerm_resource_group.exampleamina.name
+  location            = azurerm_resource_group.example.location
+  resource_group_name = azurerm_resource_group.example.name
 }
 
-resource "azurerm_subnet" "exampleamina" {
+resource "azurerm_subnet" "example" {
   name                 = "internal"
-  resource_group_name  = azurerm_resource_group.exampleamina.name
-  virtual_network_name = azurerm_virtual_network.exampleamina.name
+  resource_group_name  = azurerm_resource_group.example.name
+  virtual_network_name = azurerm_virtual_network.example.name
   address_prefixes     = ["10.0.2.0/24"]
 }
 
-resource "azurerm_network_interface" "exampleamina" {
-  name                = "exampleamina-nic"
-  location            = azurerm_resource_group.exampleamina.location
-  resource_group_name = azurerm_resource_group.exampleamina.name
+resource "azurerm_network_interface" "example" {
+  name                = "example-nic"
+  location            = azurerm_resource_group.example.location
+  resource_group_name = azurerm_resource_group.example.name
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = azurerm_subnet.exampleamina.id
+    subnet_id                     = azurerm_subnet.example.id
     private_ip_address_allocation = "Dynamic"
   }
 }
 
-resource "azurerm_linux_virtual_machine" "exampleamina" {
-  name                = "exampleamina-machine"
-  resource_group_name = azurerm_resource_group.exampleamina.name
-  location            = azurerm_resource_group.exampleamina.location
+resource "azurerm_windows_virtual_machine" "example" {
+  name                = "example-machine"
+  resource_group_name = azurerm_resource_group.example.name
+  location            = azurerm_resource_group.example.location
   size                = "Standard_F2"
   admin_username      = "adminuser"
+  admin_password      = "azerty123456@"
   network_interface_ids = [
-    azurerm_network_interface.exampleamina.id,
+    azurerm_network_interface.example.id,
   ]
-
-  admin_ssh_key {
-    username   = "adminuser"
-    public_key = file("~/.ssh/id_rsa.pub")
-  }
 
   os_disk {
     caching              = "ReadWrite"
@@ -68,9 +68,9 @@ resource "azurerm_linux_virtual_machine" "exampleamina" {
   }
 
   source_image_reference {
-    publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "20.04-LTS"
+    publisher = "MicrosoftWindowsServer"
+    offer     = "WindowsServer"
+    sku       = "2016-Datacenter"
     version   = "latest"
   }
 }
